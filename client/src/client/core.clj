@@ -49,9 +49,8 @@
        File.
        .listFiles
        (mapcat select-file)
+       ;; TODO - merge with latest data
        (into {})
        vals
        generate-string
        (spit "../public/locations.json")))
-
-(select)

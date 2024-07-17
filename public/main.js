@@ -11,34 +11,16 @@ navigator.geolocation.getCurrentPosition((position) => {
     map.setView([35.7645267, 139.8322096], 14); // no yakuza
 });
 
-// const render = cafe => {
-//     const {
-//         businessHours,
-//         path,
-//         name,
-//         description
-//     } = cafe;
-//     console.log(cafe);
-//
-//     const dengenHref = 'https://dengen-cafe.com/cafes/' + path;
-//
-//     return (`
-//             <div>
-//                 <a href="${dengenHref}" target="_blank">${name || description}</a>
-//             </div>
-//             `);
-// };
-const render = cafe => cafe.businessHours;
-
-const loading = document.getElementById('loading');
-const load = () => loading.style.display = '';
-const loadDone = () => loading.style.display = 'none';
+const render = cafe => cafe[3];
 
 async function updateResults(e) {
-    load();
-    const {lat, lng} = map.getCenter();
-    (await query(lat, lng)).forEach(cafe => {
-        const {latitude, longitude, path} = cafe;
+    const bounds = map.getBounds();
+    const boundsVector = [bounds.getSouth(), bounds.getWest(), bounds.getNorth(), bounds.getEast()];
+
+    garbageCollect(boundsVector);
+
+    (await getCafes(boundsVector)).forEach(cafe => {
+        const [latitude, longitude, path] = cafe;
         const dengenHref = 'https://dengen-cafe.com/cafes/' + path;
         const open = () => window.open(dengenHref);
         // add
@@ -46,7 +28,7 @@ async function updateResults(e) {
         const tooltip = L.tooltip({permanent: true, content: render(cafe)});
         marker.bindTooltip(tooltip);
         marker.on('click', open);
+        addMarker(cafe, marker);
     });
-    loadDone();
 }
 map.on('moveend', updateResults);

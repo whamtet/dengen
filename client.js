@@ -2,24 +2,6 @@ const cached = new Set();
 
 const validCafe = ({path, businessHours}) => !cached.has(path) && businessHours;
 
-const render = cafe => {
-    const {
-        businessHours,
-        path,
-        name,
-        description
-    } = cafe;
-    console.log(cafe);
-
-    const dengenHref = 'https://dengen-cafe.com/cafes/' + path;
-
-    return (`
-            <div>
-                <a href="${dengenHref}" target="_blank">${name || description}</a>
-            </div>
-            `);
-};
-
 // Dear reader,
 // feel free to make your own frontend!
 async function query(latitude, longitude) {
@@ -41,12 +23,12 @@ async function query(latitude, longitude) {
     );
     if (response.status === 200) {
         const data = await response.json();
-        data.data.newCafes.edges.map(e => e.node).filter(validCafe).forEach(cafe => {
-            cached.add(cafe.path);
 
-            const {latitude, longitude} = cafe;
-            // add
-            L.marker([latitude, longitude]).addTo(map).bindPopup(render(cafe)).on('click', () => console.log(cafe));
+        return data.data.newCafes.edges.map(e => e.node).filter(validCafe).map(cafe => {
+            cached.add(cafe.path);
+            return cafe;
         });
+    } else {
+        return [];
     }
 }

@@ -5,9 +5,11 @@ const validCafe = ({path, businessHours}) => !cached.has(path) && businessHours;
 
 // Dear reader,
 // feel free to make your own frontend!
-async function query(latitude, longitude) {
+async function query(latExact, lonExact) {
+    const latitude = Number(latExact.toFixed(3));
+    const longitude = Number(lonExact.toFixed(3));
 
-    const cursorKey = latitude.toFixed(3) + longitude.toFixed(3);
+    const cursorKey = '' + latitude + longitude;
 
     const variables = {where: {archived: false}, latitude, longitude};
     const after = afters[cursorKey];

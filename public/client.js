@@ -8,7 +8,7 @@ async function getLocations_() {
 const getLocations = () => locations || getLocations_();
 
 const currentMarkers = {};
-const LIMIT = 100;
+const LIMIT = 30;
 
 async function getCafes([lat1, long1, lat2, long2]) {
     const out = [];

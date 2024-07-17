@@ -33,7 +33,7 @@ function addMarker(cafe, marker) {
 
 function garbageCollect([lat1, long1, lat2, long2]) {
     for (const path in currentMarkers) {
-        const [lat, long, _, _2, marker] = currentMarkers[path];
+        const [lat, long, _, _2, _3, marker] = currentMarkers[path];
         if (lat < lat1 || lat2 <= lat || long < long1 || long2 <= long) {
             marker.remove();
             delete currentMarkers[path];

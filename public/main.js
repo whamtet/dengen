@@ -15,6 +15,11 @@ const isMobile = (function(a){if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|b
 
 const render = isMobile ? cafe => (`<span class="popup">${cafe[3]}</span>`) : cafe => cafe[3];
 
+const icon = L.icon({
+    iconUrl: 'wifi.png',
+    iconSize: [60, 80]
+});
+
 async function updateResults(e) {
     const bounds = map.getBounds();
     const boundsVector = [bounds.getSouth(), bounds.getWest(), bounds.getNorth(), bounds.getEast()];
@@ -22,11 +27,12 @@ async function updateResults(e) {
     garbageCollect(boundsVector);
 
     (await getCafes(boundsVector)).forEach(cafe => {
-        const [latitude, longitude, path] = cafe;
+        const [latitude, longitude, path, _, flags] = cafe;
         const dengenHref = 'https://dengen-cafe.com/cafes/' + path;
         const open = () => window.open(dengenHref);
         // add
-        const marker = L.marker([latitude, longitude]).addTo(map);
+        const markerOptions = flags === 1 ? {icon} : undefined;
+        const marker = L.marker([latitude, longitude], markerOptions).addTo(map);
         const tooltip = L.tooltip({permanent: true, content: render(cafe)});
         marker.bindTooltip(tooltip);
         marker.on('click', open);

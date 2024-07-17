@@ -40,9 +40,9 @@
              slurp
              read-string
              (keep
-              (fn [{{:keys [latitude longitude path businessHours]} :node}]
+              (fn [{{:keys [latitude longitude path businessHours wifi]} :node}]
                 (when businessHours
-                      [path [latitude longitude path businessHours]]))))))
+                      [path [latitude longitude path businessHours (if (= "AVAILABLE" wifi) 1 0)]]))))))
 
 (defn select []
   (->> "dump"
